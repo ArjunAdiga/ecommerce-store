@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Product } from "./utils";
 import Image from "next/image";
 import broken from "../../public/broken.jpg"
+import { CardSkeleton } from "./Skeletons";
+import RetryError from "./RetryError";
 
 const SingleProduct = () => {
   const id = usePathname()?.split("/").pop();
@@ -20,8 +22,12 @@ const SingleProduct = () => {
       if (!res.ok) throw new Error("Failed to refetch");
       const data: Product = await res.json();
       setProduct(data);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -40,10 +46,10 @@ const SingleProduct = () => {
     const stored = localStorage.getItem("cart");
     let cart = stored ? JSON.parse(stored) : [];
 
-    const existing = cart.find((p: any) => p.id === prod.id);
+    const existing = cart?.find((p: Product) => p.id === prod.id);
 
     if (existing) {
-      cart = cart.map((p: any) =>
+      cart = cart?.map((p: Product) =>
         p.id === prod.id
           ? { ...p, quantity: (p.quantity ?? 1) + 1 }
           : p
@@ -59,8 +65,8 @@ const SingleProduct = () => {
   return (
     <>
       {loading ? (
-        <>Loading...</>
-      ) : (
+        <CardSkeleton />
+      ) : error ?  <RetryError onRetry={fetchProduct} /> : (
         <div className=" mx-auto p-6">
           <div className="grid md:grid-cols-2 gap-8">
             <div className="relative w-full h-96 rounded-2xl border p-4 flex items-center justify-center">

@@ -27,8 +27,12 @@ export default function ProductGrid() {
       const unique = Array.from(new Set(data.map(item => item?.category)));
        setCategories(unique);
       setProducts(data);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -46,8 +50,12 @@ export default function ProductGrid() {
       if (!res.ok) throw new Error("Failed to refetch");
       const data: Product[] = await res.json();
       setProducts(data);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -67,7 +75,6 @@ export default function ProductGrid() {
 
   if (loading) return <GridSkeleton />;
   if (error) return <RetryError onRetry={refetch} />;
-
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
@@ -77,11 +84,11 @@ export default function ProductGrid() {
           <SortSelect onChange={setSort} />
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {filtered.map((p) => (
+     {loading ? <GridSkeleton/> :<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {filtered?.length === 0 ? "No product found" : filtered?.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
-      </div>
+      </div>}
     </div>
   );
 }
