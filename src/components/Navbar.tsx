@@ -1,29 +1,33 @@
-'use client';
-import Link from 'next/link';
-import ThemeToggle from './ThemeToggle';
+"use client";
+import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
+import Typography from "./Typography";
+import { useTheme } from "next-themes";
 // import { useCart } from '@/store/cart';
 
 export default function Navbar() {
-//   const count = useCart((state) => state.count);
-
+  // const count = useCart((s) => s.count);
+    const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
   return (
-    <nav className="flex justify-between items-center py-4 border-b border-border">
-      <Link href="/">
-        <div className="text-xl font-semibold">Mini E‑Commerce</div>
-      </Link>
-      <div className="flex items-center space-x-4">
-        <ThemeToggle />
-        <Link href="/cart">
-          <div className="relative px-3 py-1 rounded-md border hover:bg-muted transition">
-            Cart
-            {/* {count > 0 && (
-              <span className="absolute -top-2 -right-2 rounded-full bg-primary-foreground text-background text-xs w-5 h-5 flex items-center justify-center font-bold">
-                {count}
-              </span>
-            )} */}
+    <header className="border-b bg-background">
+      <div className="container-max py-4">
+        <Typography variant="h1" styles={{color: isDark ? "white" : "black"}}>Ecommerce</Typography>
+        <nav className="flex items-center justify-between w-full rounded-2xl border px-6 py-3 bg-card mt-2 shadow-sm">
+          <div className="flex items-center gap-6 flex-row font-medium text-foreground" style={{display:"flex"}}>
+            <Link href="/" className="hover:text-primary transition-colors">
+              Products
+            </Link>
+            <Link
+              href="/products"
+              className="hover:text-primary transition-colors"
+            >
+              Cart
+            </Link>
+            <ThemeToggle />
           </div>
-        </Link>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }
