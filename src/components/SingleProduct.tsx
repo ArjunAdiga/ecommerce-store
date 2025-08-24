@@ -33,16 +33,29 @@ const SingleProduct = () => {
     }
   }, [id]);
 
-  const handleAddToCart=() => {
-    if(localStorage.getItem("cart")){ 
-       const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-       localStorage.setItem("cart", JSON.stringify([...cart, product]));
+  const handleAddToCart = () => {
+
+    const prod = { ...product, quantity: 1 };
+
+    const stored = localStorage.getItem("cart");
+    let cart = stored ? JSON.parse(stored) : [];
+
+    const existing = cart.find((p: any) => p.id === prod.id);
+
+    if (existing) {
+      cart = cart.map((p: any) =>
+        p.id === prod.id
+          ? { ...p, quantity: (p.quantity ?? 1) + 1 }
+          : p
+      );
+    } else {
+      cart.push(prod);
     }
-    else {
-        localStorage.setItem("cart", JSON.stringify([product]));
-    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
     router.push("/cart");
-  }
+  };
   return (
     <>
       {loading ? (

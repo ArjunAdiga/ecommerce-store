@@ -19,7 +19,7 @@ export default function Navbar() {
               Products
             </Link>
             <Link
-              href="/products"
+              href="/cart"
               className="hover:text-primary transition-colors"
             >
               Cart
