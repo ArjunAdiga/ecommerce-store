@@ -1,9 +1,9 @@
 import React from 'react'
-import SingleProduct from 'src/components/SingleProduct'
+import Cart from 'src/components/Cart'
 
 const page = () => {
   return (
-    <SingleProduct />
+    <Cart/>
   )
 }
 
